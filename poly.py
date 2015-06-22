@@ -29,9 +29,26 @@ class Poly(object):
         self.num_equip = num_equip
         self.prodOfSums = [tup for tup in product(*(range(x) for x in fans)) if Counter(tup)[0] >= len(fans) - num_equip and sum(tup)>0]
         
-        # now, distribute...
+        # if all fans are of equal size, mod constant is simple
+        self.allSame = all(fan == self.fans[0] for fan in self.fans)
         
-        #for 
+        self.sumOfProds = self.foil(self.prodOfSums)
+        try:
+            self.minD = min(max(k) for k in self.sumOfProds)
+        except:
+            self.minD = None
+
+    def mod_const(self, tup):
+        """
+        the constant to reduce this power tuple
+        """
+        
+        moduli = []
+        for i in range(len(self.fans)):
+            if tup[i] != 0:
+                moduli.append(self.fans[i])
+        
+        return gcd(*moduli)
 
     def _foil_2args(self, sum1, sum2, mod=True):
         """
@@ -40,47 +57,83 @@ class Poly(object):
         mod: bool
         """
         result = {}
+        modc = self.fans[0]
         if type(sum1) is tuple:
             for i in range(len(sum1)):
+                if sum1[i] == 0:
+                    continue
                 for j in range(len(sum2)):
                     val = sum1[i]*sum2[j]
-                    if val == 0:
-                        continue
                     
                     key = [0]*len(sum1)
                     key[i] += 1
                     key[j] += 1
                     key = tuple(key)
                     
+                    # the key says which vairables are raiesd to what power
+                    if mod:
+                        if not self.allSame:
+                            modc = self.mod_const(key)
+                        val %= modc
+                    
+                    if val == 0:
+                        continue
                     
                     if key in result:
-                        result[key] += val
+                        if mod:
+                            result[key] = (val + result[key]) % modc
+                        else:
+                            result[key] += val
                     else:
                         result[key] = val
         # sum1 is dict
         else:
             for i in range(len(sum2)):
+                if sum2[i] == 0:
+                    continue
                 for key in sum1:
                     # update the key with the new power
                     val = sum1[key]*sum2[i]
-                    if val == 0:
-                        continue
+                    
                     new_key = list(key)
                     new_key[i] += 1
                     new_key = tuple(new_key)
                     
+                    if mod:
+                        if not self.allSame:
+                            modc = self.mod_const(new_key)
+                        val %= modc
+                    
+                    if val == 0:
+                        continue
+                    
                     if new_key in result:
-                        result[new_key] += val
+                        if mod:
+                            result[new_key] = (val + result[new_key]) % modc
+                        else:
+                            result[new_key] += val
                     else:
                         result[new_key] = val
+        
+        zero_keys = []
+        for k in result:
+            if result[k]==0:
+                zero_keys.append(k)
+        
+        for k in zero_keys:
+            result.pop(k)
+                    
         return result
 
     def foil(self, terms, mod=True):
         """
         iterable of terms
         """
-        
-        return reduce(self._foil_2args, terms)
+        try:
+            return reduce(lambda x,y: self._foil_2args(x,y,mod), terms)
+        except:
+            return {}
+
 
 def printPoly(num_fans, q, min_zero = 0):
     """

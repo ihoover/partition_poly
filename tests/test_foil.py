@@ -7,7 +7,7 @@ class Testp_foil_2args(unittest.TestCase):
     """
     
     def setUp(self):
-        self.p = Poly([0])
+        self.p = Poly([1])
     
     def test_2vars_1s(self):
         """
@@ -62,3 +62,30 @@ class Testp_foil_2args(unittest.TestCase):
         result = {(3,0):1, (2,1):3, (1,2):3, (0,3):1}
         
         self.assertEqual(self.p.foil(terms, False),result)
+    
+    def test_mod_const(self):
+        
+        p = Poly([3,9,18])
+        
+        tup1 = (1,1,1)
+        tup2 = (0,1,1)
+        tup3 = (1,0,1)
+        const1 = 3
+        const2 = 9
+        const3 = 3
+        self.assertEqual(const1, p.mod_const(tup1))
+        self.assertEqual(const2, p.mod_const(tup2))
+        self.assertEqual(const3, p.mod_const(tup3))
+    
+    def test_reducing(self):
+        """
+        Test reducing modulo
+        """
+        
+        p = Poly([3,3])
+        sumOfProds = p.foil(p.prodOfSums)
+        
+        result = {(6, 2): 1, (4, 4): 1, (2, 6): 1}
+        
+        self.assertEqual(result, sumOfProds)
+        
