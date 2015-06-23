@@ -7,7 +7,7 @@ class Testp_foil_2args(unittest.TestCase):
     """
     
     def setUp(self):
-        self.p = Poly([1])
+        self.p = Poly([0])
     
     def test_2vars_1s(self):
         """

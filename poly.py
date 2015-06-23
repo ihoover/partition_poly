@@ -1,5 +1,15 @@
-from itertools import product
-from collections import Counter
+#from itertools import product
+#from collections import Counter
+
+def count0s(tup):
+    return sum(x==0 for x in tup)
+
+# :'( python 2.4 was a sad place
+def _all(iterable):
+    for element in iterable:
+        if not element:
+            return False
+    return True
 
 def gcd_2(m,n):
 	if n==0:
@@ -27,10 +37,10 @@ class Poly(object):
         
         self.fans = fans
         self.num_equip = num_equip
-        self.prodOfSums = [tup for tup in product(*(range(x) for x in fans)) if Counter(tup)[0] >= len(fans) - num_equip and sum(tup)>0]
+        self.prodOfSums = [tup for tup in product(*(range(x) for x in fans)) if count0s(tup) >= len(fans) - num_equip and sum(tup)>0]
         
         # if all fans are of equal size, mod constant is simple
-        self.allSame = all(fan == self.fans[0] for fan in self.fans)
+        self.allSame = _all(fan == self.fans[0] for fan in self.fans)
         
         self.sumOfProds = self.foil(self.prodOfSums)
         try:
@@ -168,6 +178,16 @@ def minD(poly):
             min_max = max_pow
 
     return min_max
+
+def product(*args, **kwds):
+    # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
+    # product(range(2), repeat=3) --> 000 001 010 011 100 101 110 111
+    pools = map(tuple, args) * kwds.get('repeat', 1)
+    result = [[]]
+    for pool in pools:
+        result = [x+[y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod)
 
 if __name__ == '__main__':
 
