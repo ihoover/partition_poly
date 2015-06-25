@@ -21,11 +21,12 @@ def gcd(*args):
     return reduce(gcd_2, args)
 
 
+
 class Poly(object):
     """
     Class represents a polynomial for an equipartitioning problem
     """
-    def __init__(self, fans, num_equip=None, real=True):
+    def __init__(self, fans, num_equip=None, real=False):
         """
         fans: iterable of fan numbers e.g. [2,2,3,4]
         num_equip: int that tells which subsets equipartition.  None = all, sorry :/
@@ -36,8 +37,16 @@ class Poly(object):
             num_equip = len(fans)
         
         self.fans = fans
+        self.real = real
         self.num_equip = num_equip
         self.prodOfSums = [tup for tup in product(*(range(x) for x in fans)) if count0s(tup) >= len(fans) - num_equip and sum(tup)>0]
+        
+        # purge duplicates if real
+        if self.real:
+            for i in reversed(xrange(int(len(self.prodOfSums)))):
+                tup = self.prodOfSums[i]
+                if self.inv(tup) != tup and self.inv(tup) in self.prodOfSums:
+                    self.prodOfSums.pop(i)
         
         # if all fans are of equal size, mod constant is simple
         self.allSame = _all(fan == self.fans[0] for fan in self.fans)
@@ -48,6 +57,12 @@ class Poly(object):
         except:
             self.minD = None
 
+    def inv(self, tup):
+        """
+        inverse a tuple representing a sum (for use with real mearsures)
+        """
+        return tuple(-tup[i]%self.fans[i] for i in range(len(self.fans)))
+    
     def mod_const(self, tup):
         """
         the constant to reduce this power tuple
@@ -125,16 +140,18 @@ class Poly(object):
                     else:
                         result[new_key] = val
         
-        zero_keys = []
-        for k in result:
-            if result[k]==0:
-                zero_keys.append(k)
+        #zero_keys = []
+        #for k in result:
+        #    if result[k]==0:
+        #        zero_keys.append(k)
+        # 
+        #for k in zero_keys:
+        #    result.pop(k)
         
-        for k in zero_keys:
-            result.pop(k)
-                    
-        return result
-
+        #return result
+        
+        return {key: result[key] for key in result if result[key]!=0}
+        
     def foil(self, terms, mod=True):
         """
         iterable of terms

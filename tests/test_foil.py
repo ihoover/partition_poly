@@ -1,7 +1,7 @@
 import unittest
 from poly import Poly
 
-class Testp_foil_2args(unittest.TestCase):
+class Testp_poly(unittest.TestCase):
     """
     Tests for the p._foil_2args operation
     """
@@ -88,4 +88,24 @@ class Testp_foil_2args(unittest.TestCase):
         result = {(6, 2): 1, (4, 4): 1, (2, 6): 1}
         
         self.assertEqual(result, sumOfProds)
+    
+    def test_inv(self):
+        """
+        test inverting sums
+        """
+        p = Poly([3,3])
+        tup1 = (1,2)
+        tup2 = (1,0)
         
+        self.assertEqual(p.inv(tup1), (2,1))
+        self.assertEqual(p.inv(tup2), (2,0))
+    
+    def test_real(self):
+        """
+        test that the right things are purged
+        """
+        
+        p = Poly([3,3],real=True)
+        prodOfSums = [(0,1),(1,0),(1,1),(1,2)]
+        
+        self.assertEqual(prodOfSums, p.prodOfSums)

@@ -1,7 +1,7 @@
 from poly import *
 
-for fan_type in [3]
-    for num_fans in [2,3,4,5]:
+for fan_type in [7]:
+    for num_fans in [2,3,4]:
         print "\n======= "+str(num_fans)+" "+str(fan_type)+"-fans ======="
         for real in [True, False]:
             if real:
