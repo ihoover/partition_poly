@@ -140,17 +140,17 @@ class Poly(object):
                     else:
                         result[new_key] = val
         
-        #zero_keys = []
-        #for k in result:
-        #    if result[k]==0:
-        #        zero_keys.append(k)
-        # 
-        #for k in zero_keys:
-        #    result.pop(k)
+        zero_keys = []
+        for k in result:
+            if result[k]==0:
+                zero_keys.append(k)
+         
+        for k in zero_keys:
+            result.pop(k)
         
-        #return result
+        return result
         
-        return {key: result[key] for key in result if result[key]!=0}
+        #return {key: result[key] for key in result if result[key]!=0}
         
     def foil(self, terms, mod=True):
         """
