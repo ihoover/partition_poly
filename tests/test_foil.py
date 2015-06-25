@@ -1,4 +1,6 @@
 import unittest
+import sys
+sys.path.append("/home/simon_team/partition_poly")
 from poly import Poly
 
 class Testp_poly(unittest.TestCase):
