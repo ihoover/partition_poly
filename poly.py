@@ -44,6 +44,24 @@ def tupToDict(tup):
     
     return {basis(i):tup[i] for i in range(len(tup))}
 
+
+def allSwaps(n_vars):
+    """
+    returns all the dicts representing the polynomial
+    (xi-xj) for all i<j and i,j<n_vars
+    """
+    
+    dicts = []
+    for i in range(n_vars):
+        for j in range(i+1,n_vars):
+            term = [0]*n_vars
+            term[i] = 1
+            term[j] = -1
+            dicts.append(tupToDict(term))
+    
+    return dicts
+
+
 def equipSubsets(fans, num_equip=None, real=False):
     """
     Returns which Fourier coefficients must die.

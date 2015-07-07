@@ -44,6 +44,32 @@ class test_equipSubsets(unittest.TestCase):
         self.assertEqual(result1, result2)
 
 
+class Test_allSwaps(unittest.TestCase):
+    """
+    Test the all swaps function
+    """
+    
+    def test_2args(self):
+        
+        expected = [tupToDict(x) for x in [(1,-1)]]
+        
+        res = allSwaps(2)
+        
+        self.assertEqual(len(res),len(expected))
+        for x in res:
+            self.assertIn(x, expected)
+    
+    def test_3args(self):
+        
+        expected = [tupToDict(x) for x in [(1,-1,0),(1,0,-1),(0,1,-1)]]
+        
+        res = allSwaps(3)
+        
+        self.assertEqual(len(res),len(expected))
+        for x in res:
+            self.assertIn(x, expected)
+        
+
 class Test_foil(unittest.TestCase):
     """
     Test the foil functions
