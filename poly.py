@@ -61,6 +61,18 @@ def allSwaps(n_vars):
     
     return dicts
 
+def missingPerms(nVars, modP):
+	"""
+	Which permutations die?
+	"""
+	
+	p = EquipPoly([modP]*nVars,2)
+	actualTerms = [tuple((x-modP+1)/(modP-1) for x in key) for key in sorted(p.terms.keys())]
+	
+	allTerms = foil(allSwaps(nVars)*(modP-1))
+	
+	diff = sorted(list(set(allTerms) - set(actualTerms)))
+	return diff
 
 def equipSubsets(fans, num_equip=None, real=False):
     """
@@ -168,7 +180,6 @@ def foil(terms, mod=None):
     return reduce(lambda x,y: _foil2args(x,y,mod), terms)
 
 
-
 class Poly(object):
     """
     Class representing polynomial.  Initialized with dictionary representing the polynomial in sumOfProds form
@@ -241,6 +252,7 @@ class EquipPoly(Poly):
         self.allSame = _all(fan == self.fans[0] for fan in self.fans)
         
         self.sumOfProds = foil(self.prodOfSums, fans)
+        self.terms = self.sumOfProds
         try:
             self.minD = min(max(k) for k in self.sumOfProds)
         except:
