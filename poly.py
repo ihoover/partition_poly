@@ -72,7 +72,7 @@ def missingPerms(nVars, modP):
 	allTerms = foil(allSwaps(nVars)*(modP-1))
 	
 	diff = sorted(list(set(allTerms) - set(actualTerms)))
-	return diff
+	return sorted(set(tuple(sorted(x)) for x in diff))
 
 def equipSubsets(fans, num_equip=None, real=False):
     """
