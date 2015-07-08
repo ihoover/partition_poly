@@ -66,9 +66,9 @@ def missingPerms(nVars, modP):
 	Which permutations die?
 	"""
 	
-	p = EquipPoly([modP]*nVars,2)
-	actualTerms = [tuple((x-modP+1)/(modP-1) for x in key) for key in sorted(p.terms.keys())]
-	
+	#p = EquipPoly([modP]*nVars,2)
+	#actualTerms = [tuple((x-modP+1)/(modP-1) for x in key) for key in sorted(p.terms.keys())]
+	actualTerms = foil(allSwaps(nVars)*(modP-1),modP)
 	allTerms = foil(allSwaps(nVars)*(modP-1))
 	
 	diff = sorted(list(set(allTerms) - set(actualTerms)))
@@ -188,6 +188,7 @@ class Poly(object):
     def __init__(self, terms):
         
         self.terms = terms
+        self.nVars = len(list(terms.keys())[0])
     
     def __add__(self, other):
         """
@@ -228,6 +229,20 @@ class Poly(object):
         new_terms = foil([self.terms, other.terms])
         return Poly(new_terms)
 
+    def __str__(self):
+        
+        ys = ['y'+str(i) for i in range(self.nVars)]
+        
+        def _strKey(key):
+            res = ""
+            for i in range(len(ys)):
+                if key[i] != 0:
+                    res += ys[i]+'^'+str(key[i])
+            
+            return res
+        
+        return " + ".join([_strKey(key) for key in sorted(list(self.terms.keys()))])
+    
 
 class EquipPoly(Poly):
     """
@@ -253,6 +268,7 @@ class EquipPoly(Poly):
         
         self.sumOfProds = foil(self.prodOfSums, fans)
         self.terms = self.sumOfProds
+        self.nVars = len(list(self.terms.keys())[0])
         try:
             self.minD = min(max(k) for k in self.sumOfProds)
         except:
