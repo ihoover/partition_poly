@@ -231,7 +231,7 @@ class Poly(object):
 
     def __str__(self):
         
-        ys = ['y'+str(i) for i in range(self.nVars)]
+        ys = ['y'+str(i+1) for i in range(self.nVars)]
         
         def _strKey(key):
             res = ""
