@@ -45,6 +45,25 @@ def tupToDict(tup):
     return {basis(i):tup[i] for i in range(len(tup))}
 
 
+def allSwapsInnerFoil(n_vars, modP):
+    """
+    ge
+    """
+    dicts = []
+    for i in range(n_vars):
+        for j in range(i+1,n_vars):
+            term = [0]*n_vars
+            term[i] = 1
+            term[j] = -1
+            dicts.append(foil([tupToDict(term)]*(modP-1),modP))
+    
+    return dicts
+
+
+def MostNonzero(n, modP):
+    return [tupToDict(tup) for tup in product(range(1,modP), repeat=n)] 
+
+
 def allSwaps(n_vars):
     """
     returns all the dicts representing the polynomial
@@ -53,6 +72,7 @@ def allSwaps(n_vars):
     
     dicts = []
     for i in range(n_vars):
+        d = dict()
         for j in range(i+1,n_vars):
             term = [0]*n_vars
             term[i] = 1
@@ -241,7 +261,7 @@ class Poly(object):
             
             return res
         
-        return " + ".join([_strKey(key) for key in sorted(list(self.terms.keys()))])
+        return " + ".join([str(self.terms[key])+" "+ _strKey(key) for key in sorted(list(self.terms.keys()))])
     
 
 class EquipPoly(Poly):
